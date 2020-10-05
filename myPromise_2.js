@@ -29,6 +29,61 @@ class Promise2 {
         }
     }
 
+    static resolve(p) {
+        if (p instanceof Promise2) {
+            p.then()
+        }
+        return new Promise2((resolve, reject) => {
+            resolve(p);
+        })
+    }
+
+    static reject(p) {
+        if (p instanceof Promise2) {
+            p.catch();
+        }
+        return new Promise2((resolve, reject) => {
+            reject(p);
+        })
+    }
+
+    static all(promises) {
+        return new Promise2((resolve, reject) => {
+            try {
+                let count = 0;
+                let len = promises.length;
+                values = [];
+                for (let promise of promises) {
+                    Promise2.resolve(promise).then(val => {
+                        count++;
+                        values.push(val);
+                        if (count === len) {
+                            resolve(values);
+                        }
+                    })
+                }
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }
+
+    static race(promises) {
+        return new Promise2((resolve, reject) => {
+            try {
+                for (let promise of promises) {
+                    Promise2.resolve(promise).then(resolve);
+                }
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }
+
+    catch (onRejected) {
+        return Promise2.then(null, onRejected)；
+    }
+
     then(resovled, rejected) {
         resovled = typeof resovled === "function" ? resovled : val => val;
         rejected = typeof rejected === "function" ? rejected : err => { throw err };
@@ -99,6 +154,7 @@ class Promise2 {
                 })
         }
     }
+
 };
 
 const p = new Promise2((resolve, reject) => {

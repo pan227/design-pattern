@@ -7,7 +7,7 @@ class MyPromise1 {
     constructor(run) {
         this.status = "pending";
         this.observerList = [];
-        this.date = null;
+        this.data = null;
         const resolve = val => {
             if (this.status === "pending") {
                 this.data = val;
